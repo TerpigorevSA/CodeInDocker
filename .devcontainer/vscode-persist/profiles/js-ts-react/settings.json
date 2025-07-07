@@ -1,0 +1,7 @@
+{
+    // Уникальные настройки для JS/TS/React
+    "eslint.enable": true,
+    "prettier.singleQuote": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.tsdk": "node_modules/typescript/lib"
+}
