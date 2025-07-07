@@ -16,17 +16,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Устанавливаем .NET 8 SDK (официальный способ от Microsoft)
-RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && rm packages-microsoft-prod.deb \
-    && apt-get update && apt-get install -y dotnet-sdk-8.0
+#RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+#    && dpkg -i packages-microsoft-prod.deb \
+#    && rm packages-microsoft-prod.deb \
+#    && apt-get update && apt-get install -y dotnet-sdk-8.0
 
 # Устанавливаем Node.js 20 LTS
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+#RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+#    && apt-get install -y nodejs
 
 # Скачиваем VS Code Server
-RUN wget -q --tries=3 --waitretry=10 --no-check-certificate \
+RUN mkdir -p /tmp && chmod 777 /tmp \
+    && wget -q --tries=3 --waitretry=10 --no-check-certificate \
     https://update.code.visualstudio.com/latest/server-linux-x64/stable \
     -O /tmp/vscode-server.tar.gz \
     && test -f /tmp/vscode-server.tar.gz
