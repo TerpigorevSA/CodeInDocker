@@ -30,6 +30,8 @@ RUN wget -q --tries=3 --waitretry=10 --no-check-certificate \
     https://update.code.visualstudio.com/latest/server-linux-x64/stable \
     -O /tmp/vscode-server.tar.gz \
     && test -f /tmp/vscode-server.tar.gz
+RUN ls -lLR --ignore='*' /tmp | grep -v '^l'
+RUN test -L /usr/local/bin/code
 
 # Распаковываем
 RUN mkdir -p /opt/vscode-server
