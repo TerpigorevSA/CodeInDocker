@@ -34,7 +34,6 @@ RUN mkdir -p /tmp && chmod 777 /tmp \
 RUN ls -l / 
 #RUN ls -lLR --ignore='*' /tmp | grep -v '^l'
 RUN ls -l /tmp
-RUN test -L /usr/local/bin/code
 
 # Распаковываем
 RUN mkdir -p /opt/vscode-server
@@ -42,8 +41,7 @@ RUN tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=
 RUN ls -lLR --ignore='*' /opt/vscode-server | grep -v '^l'
 
 # Создаем симлинк
-RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code \
-    && test -L /usr/local/bin/code
+RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code 
 
 # Проверяем работоспособность
 RUN /opt/vscode-server/bin/code --version >/dev/null
