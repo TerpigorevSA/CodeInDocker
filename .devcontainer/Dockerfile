@@ -1,4 +1,4 @@
-# Базовый образ
+# Базовый образ Ubuntu 22.04
 FROM ubuntu:22.04
 
 # Устанавливаем системные зависимости
@@ -6,28 +6,37 @@ RUN apt-get update && apt-get install -y \
     wget \
     curl \
     git \
-    dotnet-sdk-8.0 \
-    nodejs \
-    npm \
+    tar \
+    gzip \
+#    python3 \
+#    python3-pip \
+    build-essential \
+    pkg-config \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем Node.js через nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-    && export NVM_DIR="$HOME/.nvm" \
-    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
-    && nvm install --lts
+# Устанавливаем .NET 8 SDK (официальный способ от Microsoft)
+RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb \
+    && apt-get update && apt-get install -y dotnet-sdk-8.0
 
-# Создаем структуру папок для расширений
+# Устанавливаем Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Устанавливаем VS Code Server (последняя стабильная версия)
+RUN curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 -o /tmp/vscode.tar.gz \
+    && mkdir -p /opt/vscode-server \
+    && tar -xzf /tmp/vscode.tar.gz -C /opt/vscode-server --strip-components=1 \
+    && ln -s /opt/vscode-server/bin/code /usr/local/bin/code
+
+# Создаем структуру профилей
 RUN mkdir -p \
     /vscode-persist/profiles/csharp/extensions \
     /vscode-persist/profiles/js-ts-react/extensions \
-    && chmod -R 777 /vscode-persist
-
-# Устанавливаем VS Code Server (альтернативный способ)
-RUN curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 -o /tmp/vscode.tar.gz \
-    && tar -xzf /tmp/vscode.tar.gz -C /opt \
-    && mv /opt/VSCode-linux-x64 /opt/vscode-server \
-    && ln -s /opt/vscode-server/bin/code /usr/local/bin/code
+    && chown -R root:root /vscode-persist \
+    && chmod -R 755 /vscode-persist
 
 # Устанавливаем расширения для C#
 RUN /opt/vscode-server/bin/code \
@@ -42,4 +51,8 @@ RUN /opt/vscode-server/bin/code \
     --install-extension esbenp.prettier-vscode \
     --install-extension firefox-devtools.vscode-firefox-debug
 
+# Настройка рабочей директории
 WORKDIR /workspace
+
+# Команда запуска
+CMD ["/opt/vscode-server/bin/code", "--no-sandbox", "--user-data-dir=/vscode-data", "--extensions-dir=/vscode-persist/extensions"]
