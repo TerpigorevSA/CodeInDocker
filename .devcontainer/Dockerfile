@@ -25,11 +25,38 @@ RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-p
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Устанавливаем VS Code Server (последняя стабильная версия)
-RUN curl -fsSLo /tmp/vscode.tar.gz https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 \
-    && mkdir -p /opt/vscode-server \
-    && tar -xzf /tmp/vscode.tar.gz -C /opt/vscode-server --strip-components=1 \
-    && ln -s /opt/vscode-server/bin/code /usr/local/bin/code
+# Устанавливаем VS Code Server с проверками
+RUN echo "Скачиваем VS Code Server..." && \
+#    wget https://update.code.visualstudio.com/latest/server-linux-x64/stable -O /tmp/vscode.tar.gz && \
+    curl -fsSLo /tmp/vscode.tar.gz https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 \
+    if [ ! -f /tmp/vscode.tar.gz ]; then echo "Ошибка: файл не скачан"; exit 1; fi && \
+    echo "Файл успешно скачан (/tmp/vscode.tar.gz)"
+
+RUN echo "Создаем папку /opt/vscode-server..." && \
+    mkdir -p /opt/vscode-server && \
+    if [ ! -d "/opt/vscode-server" ]; then echo "Ошибка: папка не создана"; exit 1; fi && \
+    echo "Папка создана (/opt/vscode-server)"
+
+RUN echo "Распаковываем архив..." && \
+    tar -xzf /tmp/vscode.tar.gz -C /opt/vscode-server --strip-components=1 && \
+    if [ $? -ne 0 ]; then echo "Ошибка распаковки"; exit 1; fi && \
+    if [ -z "$(ls -A /opt/vscode-server)" ]; then echo "Ошибка: папка пустая"; exit 1; fi && \
+    echo "Архив успешно распакован"
+
+RUN echo "Проверяем содержимое папки..." && \
+    ls -la /opt/vscode-server/bin && \
+    if [ ! -f "/opt/vscode-server/bin/code" ]; then echo "Ошибка: бинарник code не найден"; exit 1; fi && \
+    echo "Бинарник code найден"
+
+RUN echo "Создаем симлинк..." && \
+    ln -s /opt/vscode-server/bin/code /usr/local/bin/code && \
+    if [ ! -L "/usr/local/bin/code" ]; then echo "Ошибка: симлинк не создан"; exit 1; fi && \
+    echo "Симлинк создан (/usr/local/bin/code → /opt/vscode-server/bin/code)"
+
+RUN echo "Проверяем версию VS Code Server..." && \
+    /opt/vscode-server/bin/code --version && \
+    if [ $? -ne 0 ]; then echo "Ошибка: проверка версии не удалась"; exit 1; fi && \
+    echo "VS Code Server установлен успешно"
 
 # Создаем структуру профилей
 RUN mkdir -p \
