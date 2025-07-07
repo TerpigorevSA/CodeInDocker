@@ -38,13 +38,15 @@ RUN ls -l /tmp
 # Распаковываем
 RUN mkdir -p /opt/vscode-server
 RUN tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=1 
-RUN ls -lLR --ignore='*' /opt/vscode-server | grep -v '^l'
+#RUN ls -lLR --ignore='*' /opt/vscode-server | grep -v '^l'
+RUN ls -l /opt/vscode-server
+RUN ls -l /opt/vscode-server/bin
 
 # Создаем симлинк
 RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code 
 
 # Проверяем работоспособность
-RUN /opt/vscode-server/bin/code --version >/dev/null
+#RUN /opt/vscode-server/bin/code --version >/dev/null
 
 # Создаем структуру профилей
 RUN mkdir -p \
