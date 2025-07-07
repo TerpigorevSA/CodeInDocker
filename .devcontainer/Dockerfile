@@ -26,7 +26,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # Устанавливаем VS Code Server (последняя стабильная версия)
-RUN curl -fsSL https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 -o /tmp/vscode.tar.gz \
+RUN curl -fsSLo /tmp/vscode.tar.gz https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 \
     && mkdir -p /opt/vscode-server \
     && tar -xzf /tmp/vscode.tar.gz -C /opt/vscode-server --strip-components=1 \
     && ln -s /opt/vscode-server/bin/code /usr/local/bin/code
