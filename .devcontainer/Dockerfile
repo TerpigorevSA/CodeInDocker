@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y \
     gzip \
 #    python3 \
 #    python3-pip \
-    build-essential \
-    pkg-config \
-    libssl-dev \
+#    build-essential \
+#    pkg-config \
+#    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Устанавливаем .NET 8 SDK (официальный способ от Microsoft)
@@ -31,6 +31,7 @@ RUN mkdir -p /tmp && chmod 777 /tmp \
     https://update.code.visualstudio.com/latest/server-linux-x64/stable \
     -O /tmp/vscode-server.tar.gz \
     && test -f /tmp/vscode-server.tar.gz
+RUN ls -l / 
 RUN ls -lLR --ignore='*' /tmp | grep -v '^l'
 RUN test -L /usr/local/bin/code
 
