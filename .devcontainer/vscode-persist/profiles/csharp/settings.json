@@ -1,0 +1,7 @@
+{
+    // Уникальные настройки для C#
+    "dotnet.sdk.version": "8.0",
+    "omnisharp.useModernNet": true,
+    "editor.formatOnSave": true,
+    "csharp.suppressDotnetInstallWarning": true
+}
