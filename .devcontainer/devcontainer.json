@@ -1,0 +1,29 @@
+{
+  "name": "Multi-Profile Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "mounts": [
+    // Монтируем папку проекта
+    "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    // Монтируем папку с профилями и настройками
+    "source=${localWorkspaceFolder}/.devcontainer/vscode-persist,target=/vscode-persist,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      // Общие настройки (можно переопределить в профилях)
+      "settings": {
+        "editor.fontSize": 14,
+        "files.autoSave": "onFocusChange"
+      }
+    }
+  },
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet": {
+      "version": "8.0"
+    }
+  }
+}
