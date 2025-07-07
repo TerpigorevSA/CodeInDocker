@@ -34,6 +34,7 @@ RUN wget -q --tries=3 --waitretry=10 --no-check-certificate \
 # Распаковываем
 RUN mkdir -p /opt/vscode-server
 RUN tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=1 
+RUN ls -lLR --ignore='*' /opt/vscode-server | grep -v '^l'
 
 # Создаем симлинк
 RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code \
