@@ -32,9 +32,9 @@ RUN wget -q --tries=3 --waitretry=10 --no-check-certificate \
     && test -f /tmp/vscode-server.tar.gz
 
 # Распаковываем
-RUN mkdir -p /opt/vscode-server \
-    && tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=1 \
-    && test -f /opt/vscode-server/bin/code
+RUN mkdir -p /opt/vscode-server
+RUN tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=1
+RUN test -f /opt/vscode-server/bin/code
 
 # Создаем симлинк
 RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code \
