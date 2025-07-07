@@ -25,25 +25,23 @@ RUN wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-p
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Устанавливаем VS Code Server с проверками
-RUN echo "Скачиваем VS Code Server..." && \
-#    wget https://update.code.visualstudio.com/latest/server-linux-x64/stable -O /tmp/vscode.tar.gz && \
-    curl -fsSLo /tmp/vscode.tar.gz https://code.visualstudio.com/sha/download?build=stable&os=linux-x64 
+# Скачиваем VS Code Server
+RUN wget -q --tries=3 --waitretry=10 --no-check-certificate \
+    https://update.code.visualstudio.com/latest/server-linux-x64/stable \
+    -O /tmp/vscode-server.tar.gz \
+    && test -f /tmp/vscode-server.tar.gz
 
-RUN echo "Создаем папку /opt/vscode-server..." && \
-    mkdir -p /opt/vscode-server
+# Распаковываем
+RUN mkdir -p /opt/vscode-server \
+    && tar -xzf /tmp/vscode-server.tar.gz -C /opt/vscode-server --strip-components=1 \
+    && test -f /opt/vscode-server/bin/code
 
-RUN echo "Распаковываем архив..." && \
-    tar -xzf /tmp/vscode.tar.gz -C /opt/vscode-server --strip-components=1 && 
+# Создаем симлинк
+RUN ln -s /opt/vscode-server/bin/code /usr/local/bin/code \
+    && test -L /usr/local/bin/code
 
-RUN echo "Проверяем содержимое папки..." && \
-    ls -la /opt/vscode-server/bin
-    
-RUN echo "Создаем симлинк..." && \
-    ln -s /opt/vscode-server/bin/code /usr/local/bin/code
-    
-RUN echo "Проверяем версию VS Code Server..." && \
-    /opt/vscode-server/bin/code --version
+# Проверяем работоспособность
+RUN /opt/vscode-server/bin/code --version >/dev/null
 
 # Создаем структуру профилей
 RUN mkdir -p \
