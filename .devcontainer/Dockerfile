@@ -32,7 +32,8 @@ RUN mkdir -p /tmp && chmod 777 /tmp \
     -O /tmp/vscode-server.tar.gz \
     && test -f /tmp/vscode-server.tar.gz
 RUN ls -l / 
-RUN ls -lLR --ignore='*' /tmp | grep -v '^l'
+#RUN ls -lLR --ignore='*' /tmp | grep -v '^l'
+RUN ls -l /tmp
 RUN test -L /usr/local/bin/code
 
 # Распаковываем
